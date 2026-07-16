@@ -1,0 +1,76 @@
+name: FinderGitClone
+
+options:
+  bundleIdPrefix: com.findergitclone
+  deploymentTarget:
+    macOS: "14.0"
+  xcodeVersion: "15.0"
+  generateEmptyDirectories: true
+  groupSortPosition: top
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+
+packages:
+  FinderGitCloneCore:
+    path: .
+    product: FinderGitCloneCore
+
+targets:
+
+  FinderGitClone:
+    type: application
+    platform: macOS
+    sources:
+      - path: App/Sources
+        group: App
+    dependencies:
+      - package: FinderGitCloneCore
+      - target: FinderExtension
+        embed: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.findergitclone.app
+        PRODUCT_NAME: FinderGitClone
+        INFOPLIST_FILE: App/Sources/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGN_STYLE: Manual
+    info:
+      path: App/Sources/Info.plist
+
+  FinderExtension:
+    type: app-extension
+    platform: macOS
+    sources:
+      - path: FinderExtension/Sources
+        group: FinderExtension
+    dependencies:
+      - package: FinderGitCloneCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.findergitclone.app.FinderExtension
+        PRODUCT_NAME: FinderExtension
+        INFOPLIST_FILE: FinderExtension/Sources/Info.plist
+        SKIP_INSTALL: YES
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGN_STYLE: Manual
+
+  FinderGitCloneTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: Tests/FinderGitCloneCoreTests
+        group: Tests
+    dependencies:
+      - package: FinderGitCloneCore
+      - target: FinderGitClone
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.findergitclone.tests
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGN_STYLE: Manual
+        GENERATE_INFOPLIST_FILE: YES
